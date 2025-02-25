@@ -8,7 +8,7 @@ for (thisFile in allFiles) {
   
   subFiles <- list.files(path = paste0("~/GitHubStuff/jasp-gif-library/", thisFile))
   
-  if (paste0(thisFile, ".jasp") %in% subFiles) {
+  if (paste0(thisFile, ".mp4") %in% subFiles) {
     
     noSpaceFileName <- gsub(x = thisFile, pattern =" ", replacement = "%20")
     underscoreFileName <- gsub(x = thisFile, pattern =" ", replacement = "_")
@@ -30,10 +30,10 @@ analysisNames <- analysisNames[order(numbers)]
 analysisList <- list()
 for (thisAnalysis in analysisNames) {
   
-  subFiles <- list.files(path = paste0("~/GitHubStuff/jasp-gif-library/gifs/", thisAnalysis))
+  subFiles <- list.files(path = paste0("~/GitHubStuff/jasp-gif-library/", thisAnalysis), recursive = TRUE)
   
-  thisAnalysisData <- subFiles[grepl(x = subFiles, pattern = ".jasp")]
-  thisAnalysisData <- gsub(x = thisAnalysisData, pattern = ".jasp", replacement = "")
+  thisAnalysisData <- subFiles[grepl(x = subFiles, pattern = ".mp4")]
+  thisAnalysisData <- gsub(x = thisAnalysisData, pattern = ".mp4", replacement = "")
   
   analysisList[[thisAnalysis]] <- list()
   
@@ -48,7 +48,7 @@ for (thisAnalysis in analysisNames) {
 
 # Part 2: generate md files for each chapter
 # Used for matching the book links:
-unlistedAnalysisList <- unlist(analysisList, recursive = F)
+unlistedAnalysisList <- unlist(analysisList, recursive = FALSE)
 unlistedDataNamesList <- unlist(lapply(analysisList, names))
 
 for (i in seq_along(analysisList)) {
@@ -80,34 +80,6 @@ for (i in seq_along(analysisList)) {
     
     cat(result, file = file_name, append = TRUE)
     
-  }
-  
-  if (chapterTitle == "Books") {
-    
-    for (thisBook in bookTitles) {
-      
-      cat(paste("\n\n##", thisBook, "\n"), file = file_name, append = TRUE)
-      
-      allDataNames <- bookDatasets[[thisBook]]
-      
-      matchedBookDataList <- unlistedAnalysisList[match(allDataNames, unlistedDataNamesList)]
-      
-      for (thisDataName in names(matchedBookDataList)) {
-        
-        cat(paste("\n\n###", sub(".*\\.", "", thisDataName), "\n"), file = file_name, append = TRUE)
-        # chapter_content <- chapterList[[thisDataName]][[1]]
-        # cat(chapter_content, file = file_name, append = TRUE)
-        cat("|  |  |  |\n", file = file_name, append = TRUE)
-        cat("|---|---|---|\n", file = file_name, append = TRUE)
-        
-        item_list <- matchedBookDataList[[thisDataName]]
-        
-        result <- paste("|", paste(item_list, collapse = " | "), "|", sep = "")
-        
-        cat(result, file = file_name, append = TRUE)
-        
-      }
-    }
   }
   
 }
